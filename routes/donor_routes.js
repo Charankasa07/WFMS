@@ -59,6 +59,7 @@ router.post('/donate-food',async(req,res)=>{
         email:req.body.email,
         town:req.body.town.toLowerCase(),
         address:req.body.address,
+        phone:req.body.phone,
         foods:items,
         quantities:quan,
         date:x
