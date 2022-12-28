@@ -58,7 +58,7 @@ router.get('/available-donations/:id',async(req,res)=>{
     try {
         const data = await donations.findByIdAndUpdate(req.params.id,{$set:{isAssigned:true}},{new:true})
         res.render('accept_donation',{
-            details:data.address
+            details:data
         })
     } catch (error) {
         res.render('accept_donation',{
