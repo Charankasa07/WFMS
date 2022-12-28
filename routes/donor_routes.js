@@ -30,7 +30,7 @@ router.post('/register',async (req,res)=>{
     try {
         await donor.save()
         // const token = jwt.sign({email:donor.email},process.env.donor_token)
-        res.sendFile(path.join(__dirname,'../public/donor.html'))
+        res.sendFile(path.join(__dirname,'../public/main.html'))
     } catch (error) {
         res.send(error.message)
     }

@@ -31,7 +31,7 @@ router.post('/register',async (req,res)=>{
     try {
         await agent.save()
         const token = jwt.sign({email:agent.email},process.env.agent_token)
-        res.setHeader('auth-token',token).status(200).sendFile(path.join(__dirname,'../public/delivery_agent.html'))
+        res.setHeader('auth-token',token).status(200).sendFile(path.join(__dirname,'../public/main.html'))
     } catch (error) {
         res.send(error.message)
     }
