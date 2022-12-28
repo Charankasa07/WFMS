@@ -159,7 +159,4 @@ app.get('/',(req,res)=>{
     res.redirect('Home_Page.html')
 })
 
-app.listen(3000,console.log("Listening on port 3000"))
-
-const date = new Date()
-console.log(date.toDateString())
+app.listen(process.env.PORT || 3000,console.log("Listening on port 3000"))
