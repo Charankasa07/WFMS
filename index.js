@@ -52,14 +52,6 @@ app.post('/login',async (req,res)=>{
     return res.setHeader('auth-token',token).status(200).sendFile(path.join(__dirname,'./public/donor.html'))
 })
 
-app.get('/login',(req,res)=>{
-    res.sendFile(path.join(__dirname,'./public/login.html'))
-})
-
-app.get('/reset-password',(req,res)=>{
-    res.sendFile(path.join(__dirname,'./public/reset_password.html'))
-})
-
 app.post('/reset-password',async (req,res)=>{
     const mail = req.body.email
     console.log(mail);
@@ -151,9 +143,6 @@ app.post('/user',async (req,res)=>{
     }
 })
 
-app.get('/user',(req,res)=>{
-    res.redirect('User_Page.html')
-})
 
 app.get('/',(req,res)=>{
     res.redirect('Home_Page.html')
