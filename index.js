@@ -65,7 +65,7 @@ app.post('/reset-password',async (req,res)=>{
         const secret = process.env.token_secret + data.password
         const subject = "RESET PASSWORD"
         const token = jwt.sign({email:mail},secret,{expiresIn:"10m"})
-        const body = `${url}/${mail}/${token}`
+        const body = `${url}/reset-password/${mail}/${token}`
         await sendMail(mail,subject,body)
         res.sendFile(path.join(__dirname,'./public/recover.html'))
         
