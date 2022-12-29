@@ -17,6 +17,7 @@ const { log } = require('console')
 const {sendMail} = require('./nodemailer')
 dotenv.config()
 const ejs = require('ejs')
+const url = 'https://wfms.onrender.com'
 
 app.set('view engine',"ejs");
 
@@ -54,7 +55,6 @@ app.post('/login',async (req,res)=>{
 
 app.post('/reset-password',async (req,res)=>{
     const mail = req.body.email
-    console.log(mail);
     try {
 
         var data = await donor_schema.findOne({email:mail})
@@ -65,8 +65,8 @@ app.post('/reset-password',async (req,res)=>{
         const secret = process.env.token_secret + data.password
         const subject = "RESET PASSWORD"
         const token = jwt.sign({email:mail},secret,{expiresIn:"10m"})
-        const text = `http:localhost:3000/reset-password/${mail}/${token}`
-        await sendMail(mail,subject,text)
+        const body = `${url}/${mail}/${token}`
+        await sendMail(mail,subject,body)
         res.sendFile(path.join(__dirname,'./public/recover.html'))
         
     } catch (error) {
@@ -77,14 +77,14 @@ app.post('/reset-password',async (req,res)=>{
 app.get('/reset-password/:mail/:token',async (req,res)=>{
     const {mail,token} = req.params
     try {
-        var data = await donor_schema.findOne({email:req.body.email})
+        var data = await donor_schema.findOne({email:mail})
         if(!data) {
-            var data = await agent_schema.findOne({email:req.body.email})
+            var data = await agent_schema.findOne({email:mail})
             if(!data) return res.status(400).send("Account doesn't exist")
         }
-        const secret = proces.env.token_secret + data.password
+        const secret = process.env.token_secret + data.password
         const verified = jwt.verify(token,secret)
-        res.sendFile(path.join(__dirname,'../reset_password_mail.html'))
+        res.sendFile(path.join(__dirname,'./public/reset_password_mail.html'))
     } catch (error) {
         res.send(error.message)
     }
@@ -93,9 +93,9 @@ app.get('/reset-password/:mail/:token',async (req,res)=>{
 app.post('/reset-password/:mail/:token',async (req,res)=>{
     const {mail,token} = req.params
     try {
-        var data = await donor_schema.findOne({email:req.body.email})
+        var data = await donor_schema.findOne({email:mail})
         if(!data) {
-            var data = await agent_schema.findOne({email:req.body.email})
+            var data = await agent_schema.findOne({email:mail})
             if(!data) return res.status(400).send("Account doesn't exist")
         }
         const password = req.body.password
@@ -104,20 +104,23 @@ app.post('/reset-password/:mail/:token',async (req,res)=>{
         if(password===password1){
             const secret = process.env.token_secret + data.password
             const verified = jwt.verify(token,secret)
-            const hashedpass = bcrypt.hash(password,10)
-            var data = await donor_schema.findOne({email:req.body.email})
+            var hashedpass = bcrypt.hash(password,10)
+            const pass = hashedpass.toString()
+            var data = await donor_schema.findOne({email:mail})
             if(data) {
-                await donor_schema.findOneAndUpdate({email:mail},{$set : {password}},{new:true})
-                return res.status(200).send({status:"Success",message:"Password updated successfully"})
+                await donor_schema.findOneAndUpdate({email:mail},{$set : {password:pass}},{new:true})
+                res.render('status_food',{details:"Password Updated Successfully"})
             }
-            await agent_schema.findOneAndUpdate({email:mail},{$set : {password}},{new:true})
-            res.status(200).send({status:"Success",message:"Password updated successfully"})
+            else{
+            await agent_schema.findOneAndUpdate({email:mail},{$set : {password:pass}},{new:true})
+            res.render('status_food',{details:"Password Updated Successfully"})
+            }
         }
         else{
-            res.status(400).send("Password didn't match")
+            res.render('status_food',{details:"Password didn't match"})
         }
     } catch (error) {
-        res.send(error.message)
+        res.render('status_food',{details:error.message})
     }
 })
 
