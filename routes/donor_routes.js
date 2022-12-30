@@ -74,8 +74,8 @@ router.post('/donate-food',async(req,res)=>{
         const subject1 = "Delivery Available"
         const text1 = `A Donation is available at ${address}`
         const agents = await agent_schema.find({town:post.town},{email:1})
-        agents.forEach(item=>{
-            sendMail(item.email,subject1,text1)
+        await agents.forEach(item=>{
+             sendMail(item.email,subject1,text1)
         })
         res.render('status_food',{
             details:"Donated Successfully"
