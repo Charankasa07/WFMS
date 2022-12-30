@@ -20,6 +20,10 @@ const schema = mongoose.Schema({
     gender:{
         type:String,
         required:false
+    },
+    town:{
+        type:String,
+        required:true
     }
 }
     ,{collection:"agent"})

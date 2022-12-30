@@ -17,7 +17,8 @@ const agent_registervalidation = async (data)=>{
         email : joi.string().required().email(),
         password : joi.string().required().min(8),
         phone : joi.number().required(),
-        gender : joi.string().required()
+        gender : joi.string().required(),
+        town: joi.string().required()
     })
 
     return await schema.validate(data)

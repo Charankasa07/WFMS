@@ -26,6 +26,7 @@ router.post('/register',async (req,res)=>{
         password:hashedpass,
         phone:req.body.phone,
         gender:req.body.gender,
+        town : req.body.town.toLowerCase()
     })
 
     try {

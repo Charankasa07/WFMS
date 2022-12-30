@@ -66,19 +66,19 @@ router.post('/donate-food',async(req,res)=>{
     })
     try {
         await post.save()
+        const address = post.address
         const donor = await donor_schema.findOne({email:post.email})
         const subject = "Donation of Food"
         const text = `You have Successfully Donated ${fooditems} Food Items`
         await sendMail(post.email,subject,text)
         const subject1 = "Delivery Available"
-        const text1 = `A Donation is available at ${donor.address}`
-        const agents = await agent_schema.find({town:donor.town},{email:1})
+        const text1 = `A Donation is available at ${address}`
+        const agents = await agent_schema.find({town:post.town},{email:1})
         agents.forEach(item=>{
-            sendMail(item,subject1,text1)
+            sendMail(item.email,subject1,text1)
         })
-        var status="Donated Successfully";
         res.render('status_food',{
-            details:status
+            details:"Donated Successfully"
         })
     } catch (error) {
         res.render('status_food',{
